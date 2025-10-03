@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тренировочный конструктор - Полумарафон 1:25-1:30</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #5a3d8a 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            padding: 25px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.1) 100%);
+            border-radius: 12px;
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+        .header h1 {
+            font-size: 2.8em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+            background: linear-gradient(45deg, #fff, #e6e6ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header .subtitle {
+            font-size: 1.4em;
+            margin-bottom: 15px;
+            font-weight: 600;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+        }
+
+        .header .goal {
+            font-size: 1.2em;
+            opacity: 0.9;
+            background: linear-gradient(135deg, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0.15) 100%);
+            padding: 12px 25px;
+            border-radius: 25px;
+            display: inline-block;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .training-table {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+            margin-bottom: 30px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+
+        th {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            padding: 18px 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #ecf0f1;
+            vertical-align: top;
+        }
+
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        tr:hover {
+            background: #e8f4f8;
+            transition: background 0.3s ease;
+        }
+
+        .day-type-cell {
+            width: 180px;
+        }
+
+        .day-type-content {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .day-column {
+            font-weight: 700;
+            color: #2c3e50;
+            font-size: 1.3em;
+            text-align: center;
+            padding: 8px 0;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        }
+
+        .type-badge {
+            padding: 10px 15px;
+            border-radius: 25px;
+            font-size: 0.9em;
+            font-weight: 600;
+            display: inline-block;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            width: 100%;
+        }
+
+        .recovery { 
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+            color: #155724;
+        }
+        .interval { 
+            background: linear-gradient(135deg, #f8d7da, #f1b0b7);
+            color: #721c24;
+        }
+        .tempo { 
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            color: #856404;
+        }
+        .long { 
+            background: linear-gradient(135deg, #cce7ff, #b3d9ff);
+            color: #004085;
+        }
+        .strength { 
+            background: linear-gradient(135deg, #e2e3e5, #d6d8db);
+            color: #383d41;
+        }
+
+        .option {
+            margin-bottom: 12px;
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 5px solid;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .option:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .easy { 
+            background: linear-gradient(135deg, #f0f9ff, #e6f3ff); 
+            border-left-color: #28a745; 
+        }
+        
+        .base { 
+            background: linear-gradient(135deg, #fffbf0, #fff5e6); 
+            border-left-color: #ffc107; 
+        }
+        
+        .progressive { 
+            background: linear-gradient(135deg, #fff0f0, #ffe6e6); 
+            border-left-color: #dc3545; 
+        }
+
+        .benefit-item {
+            margin-bottom: 8px;
+            padding: 8px 0 8px 15px;
+            border-left: 4px solid #667eea;
+            background: linear-gradient(135deg, #f8f9fa, #f0f2f5);
+            border-radius: 5px;
+            transition: transform 0.2s ease;
+        }
+
+        .benefit-item:hover {
+            transform: translateX(5px);
+        }
+
+        .emoji {
+            font-size: 1.3em;
+            margin-right: 8px;
+        }
+
+        .special-tip {
+            background: linear-gradient(135deg, #e7f3ff, #d9ebff);
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border-left: 4px solid #2196F3;
+            font-size: 0.95em;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .special-tip strong {
+            color: #1976D2;
+        }
+
+        .zones-table {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+        }
+
+        .zones-table h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.8em;
+            background: linear-gradient(45deg, #2c3e50, #667eea);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .zones-container {
+            overflow-x: auto;
+        }
+
+        .zones {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+
+        .zones th {
+            background: linear-gradient(135deg, #34495e, #2c3e50);
+            padding: 15px;
+            text-align: center;
+        }
+
+        .zones td {
+            padding: 12px 15px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        .zones tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .zone-1 { background: linear-gradient(135deg, #e8f5e9, #d8eed9); }
+        .zone-2 { background: linear-gradient(135deg, #c8e6c9, #b8d6b9); }
+        .zone-3 { background: linear-gradient(135deg, #fff9c4, #f5efb4); }
+        .zone-4 { background: linear-gradient(135deg, #ffccbc, #f5bcac); }
+        .zone-5 { background: linear-gradient(135deg, #ffcdd2, #f5bdc2); }
+
+        .instructions {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+        }
+
+        .instructions h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.8em;
+            background: linear-gradient(45deg, #2c3e50, #667eea);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .instruction-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        .instruction-card {
+            background: linear-gradient(135deg, #f8f9fa, #f0f2f5);
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 5px solid #667eea;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .instruction-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+
+        .instruction-card h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .highlights {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+        }
+
+        .highlights h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.8em;
+            background: linear-gradient(45deg, #2c3e50, #667eea);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .highlight-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .highlight-list li {
+            padding: 12px 0 12px 40px;
+            margin-bottom: 10px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="%23667eea" d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>') no-repeat left center;
+            background-size: 24px;
+            background: linear-gradient(135deg, #f8f9fa, #f0f2f5);
+            border-radius: 8px;
+            transition: transform 0.2s ease;
+        }
+
+        .highlight-list li:hover {
+            transform: translateX(5px);
+        }
+
+        @media (max-width: 768px) {
+            th, td {
+                padding: 12px 8px;
+                font-size: 0.9em;
+            }
+            
+            .header h1 {
+                font-size: 2.2em;
+            }
+            
+            .type-badge {
+                font-size: 0.8em;
+                padding: 8px 10px;
+            }
+            
+            .header .goal {
+                font-size: 1em;
+                padding: 10px 20px;
+            }
+            
+            .instruction-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .instruction-card {
+                padding: 20px;
+            }
+            
+            .zones-table, .instructions, .highlights {
+                padding: 20px;
+            }
+            
+            .day-type-cell {
+                width: 140px;
+            }
+            
+            .day-column {
+                font-size: 1.1em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .header {
+                padding: 20px 15px;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .header .subtitle {
+                font-size: 1.2em;
+            }
+            
+            .training-table, .zones-table, .instructions, .highlights {
+                border-radius: 10px;
+            }
+            
+            .day-type-cell {
+                width: 120px;
+            }
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏃‍♂️ Тренировочный конструктор</h1>
+            <div class="subtitle">Полумарафон 1:25–1:30 (~4:00–4:15/км)</div>
+            <div class="goal">Цель: 1:25–1:30 на полумарафоне</div>
+        </div>
+
+        <div class="training-table">
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>День и тип</th>
+                            <th>Варианты тренировок (выбери по состоянию)</th>
+                            <th>Что развиваем</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="day-type-cell">
+                                <div class="day-type-content">
+                                    <div class="day-column">ПН</div>
+                                    <span class="type-badge recovery">🟢 Восстановление</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="option easy">
+                                    <strong>🟢 Легкий:</strong> 40' Z1-Z2
+                                </div>
+                                <div class="option base">
+                                    <strong>🟡 Базовый:</strong> 50' Z1-Z2
+                                </div>
+                                <div class="option progressive">
+                                    <strong>🔴 Прогрессив:</strong> 60' Z1-Z2
+                                </div>
+                                <div class="special-tip">
+                                    <strong>⚡ Фокус:</strong> держать каденс 170–175 даже в лёгком беге.
+                                </div>
+                            </td>
+                            <td>
+                                <div class="benefit-item"><span class="emoji">💫</span> Капилляры + митохондрии</div>
+                                <div class="benefit-item"><span class="emoji">🌊</span> Плазма крови + объем крови</div>
+                                <div class="benefit-item">Гормональный фон</div>
+                                <div class="benefit-item">Аэробная база на низком пульсе</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="day-type-cell">
+                                <div class="day-type-content">
+                                    <div class="day-column">ВТ</div>
+                                    <span class="type-badge interval">🔴 Интервалы (VO₂max)</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="option easy">
+                                    <strong>🟢 Легкий:</strong> 4 × 1200 м @ 4:40 (пауза 2')
+                                </div>
+                                <div class="option base">
+                                    <strong>🟡 Базовый:</strong> 5 × 1200 м @ 4:35
+                                </div>
+                                <div class="option progressive">
+                                    <strong>🔴 Прогрессив:</strong> 6 × 1000 м @ 4:25 или 8 × 800 м @ 4:20 🚀
+                                </div>
+                                <div class="special-tip">
+                                    <strong>⚡ Вариация:</strong> раз в 2 недели «лестница» (400+600+800+1000+800+600 м @ 4:20–4:15).
+                                </div>
+                            </td>
+                            <td>
+                                <div class="benefit-item">Скорость на «грани»</div>
+                                <div class="benefit-item"><span class="emoji">🚀</span> VO2 max + буфер лактата</div>
+                                <div class="benefit-item"><span class="emoji">📈</span> МПК (потребление O₂)</div>
+                                <div class="benefit-item"><span class="emoji">💨</span> Аэробная мощность</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="day-type-cell">
+                                <div class="day-type-content">
+                                    <div class="day-column">СР</div>
+                                    <span class="type-badge recovery">🟢 Восстановление</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="option easy">
+                                    <strong>🟢 Легкий:</strong> Отдых
+                                </div>
+                                <div class="option base">
+                                    <strong>🟡 Базовый:</strong> 30' Z1
+                                </div>
+                                <div class="option progressive">
+                                    <strong>🔴 Прогрессив:</strong> 40' Z1
+                                </div>
+                            </td>
+                            <td>
+                                <div class="benefit-item"><span class="emoji">🧹</span> Вывод метаболитов + ЦНС</div>
+                                <div class="benefit-item">Кровоток, выведение метаболитов</div>
+                                <div class="benefit-item"><span class="emoji">🔄</span> Синтез гликогена</div>
+                                <div class="benefit-item"><span class="emoji">🦵</span> Сухожилия + связки</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="day-type-cell">
+                                <div class="day-type-content">
+                                    <div class="day-column">ЧТ</div>
+                                    <span class="type-badge tempo">🟠 Темповая (ПАНО)</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="option easy">
+                                    <strong>🟢 Легкий:</strong> 3 × 12' @ Z3 (4:45–4:50)
+                                </div>
+                                <div class="option base">
+                                    <strong>🟡 Базовый:</strong> 2 × 20' @ Z3–Z4 (4:40–4:35)
+                                </div>
+                                <div class="option progressive">
+                                    <strong>🔴 Прогрессив:</strong> 30–35' непрерывно @ Z3–Z4 (4:35–4:30) 💨
+                                </div>
+                                <div class="special-tip">
+                                    <strong>⚡ Прогрессия:</strong> каждые 3 недели — 35–40' темповый блок @ ~4:30.
+                                </div>
+                            </td>
+                            <td>
+                                <div class="benefit-item"><span class="emoji">⚡</span> Лактатный порог</div>
+                                <div class="benefit-item"><span class="emoji">🛡️</span> Толерантность к лактату</div>
+                                <div class="benefit-item"><span class="emoji">🧠</span> Психическая устойчивость</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="day-type-cell">
+                                <div class="day-type-content">
+                                    <div class="day-column">ПТ</div>
+                                    <span class="type-badge long">🟡 Длительный (аэробная база)</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="option easy">
+                                    <strong>🟢 Легкий:</strong> 70' Z2 (5:20–5:30)
+                                </div>
+                                <div class="option base">
+                                    <strong>🟡 Базовый:</strong> 80' Z2
+                                </div>
+                                <div class="option progressive">
+                                    <strong>🔴 Прогрессив:</strong> 90' Z2 + последние 20' @ Z3 (4:50–4:45)
+                                </div>
+                            </td>
+                            <td>
+                                <div class="benefit-item"><span class="emoji">🏗️</span> Аэробная база + экономичность</div>
+                                <div class="benefit-item"><span class="emoji">🐢</span> Мышечные волокна I типа</div>
+                                <div class="benefit-item"><span class="emoji">🔋</span> Митохондриальная сеть</div>
+                                <div class="benefit-item">Экономичность, жиросжигание</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="day-type-cell">
+                                <div class="day-type-content">
+                                    <div class="day-column">СБ</div>
+                                    <span class="type-badge strength">🔵 Силовая/Бассейн</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="option easy">
+                                    <strong>🟢 Легкий:</strong> Бассейн 30'
+                                </div>
+                                <div class="option base">
+                                    <strong>🟡 Базовый:</strong> Присед 3×6 + 20' Z1
+                                </div>
+                                <div class="option progressive">
+                                    <strong>🔴 Прогрессив:</strong> Становая 3×4 + 20' Z1 или полный комплекс
+                                </div>
+                                <div class="special-tip">
+                                    <strong>⚡ Дополнение:</strong> упражнения на стопу и голеностоп → экономия энергии.
+                                </div>
+                            </td>
+                            <td>
+                                <div class="benefit-item"><span class="emoji">💪</span> Мышечный корсет + травмопрофилактика</div>
+                                <div class="benefit-item"><span class="emoji">🧠</span> Нейромышечная связь + взрывная сила</div>
+                                <div class="benefit-item"><span class="emoji">🦴</span> Стабильность суставов + координация</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="day-type-cell">
+                                <div class="day-type-content">
+                                    <div class="day-column">ВС</div>
+                                    <span class="type-badge long">🟡 Длительный (энергетика)</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="option easy">
+                                    <strong>🟢 Легкий:</strong> 80' Z2
+                                </div>
+                                <div class="option base">
+                                    <strong>🟡 Базовый:</strong> 90' Z2
+                                </div>
+                                <div class="option progressive">
+                                    <strong>🔴 Прогрессив:</strong> 100' Z2 + финиш 15' @ Z3 (4:45–4:35)
+                                </div>
+                                <div class="special-tip">
+                                    <strong>⚡ Спец-тренировка:</strong> раз в месяц — «прогрессивный длительный»: старт 5:30 → финиш последние 5 км @ 4:15–4:10.
+                                </div>
+                            </td>
+                            <td>
+                                <div class="benefit-item"><span class="emoji">🔥</span> Липолиз (жиросжигание)</div>
+                                <div class="benefit-item"><span class="emoji">🏪</span> Гликогеновое депо</div>
+                                <div class="benefit-item"><span class="emoji">🔋</span> Выносливость + восстановление</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="zones-table">
+            <h2>🎯 Тренировочные зоны (ПАНО = 177 уд/мин)</h2>
+            <div class="zones-container">
+                <table class="zones">
+                    <thead>
+                        <tr>
+                            <th>Зона</th>
+                            <th>Диапазон пульса (уд/мин)</th>
+                            <th>% от ПАНО</th>
+                            <th>Темп (мин/км, ориентир)</th>
+                            <th>Назначение</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="zone-1">
+                            <td><strong>Z1</strong></td>
+                            <td>107–131</td>
+                            <td>60–74%</td>
+                            <td>6:00–7:00+</td>
+                            <td>Восстановление, кровоток, база</td>
+                        </tr>
+                        <tr class="zone-2">
+                            <td><strong>Z2</strong></td>
+                            <td>132–149</td>
+                            <td>75–84%</td>
+                            <td>5:30–6:00</td>
+                            <td>Лёгкий бег, развитие аэробной базы</td>
+                        </tr>
+                        <tr class="zone-3">
+                            <td><strong>Z3</strong></td>
+                            <td>150–167</td>
+                            <td>85–94%</td>
+                            <td>4:50–5:10</td>
+                            <td>Темповой бег, устойчивость, перенос ПАНО</td>
+                        </tr>
+                        <tr class="zone-4">
+                            <td><strong>Z4</strong></td>
+                            <td>168–179</td>
+                            <td>95–101%</td>
+                            <td>4:20–4:35</td>
+                            <td>Интервалы и темповая работа, рост ПАНО</td>
+                        </tr>
+                        <tr class="zone-5">
+                            <td><strong>Z5</strong></td>
+                            <td>180–190</td>
+                            <td>102–108%</td>
+                            <td>3:50–4:10</td>
+                            <td>VO₂max, скорость, финишные резервы</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="highlights">
+            <h2>🎯 Акценты под цель 1:25–1:30</h2>
+            <ul class="highlight-list">
+                <li><strong>Объём:</strong> 55–65 км/нед. (постепенно, +10% в месяц)</li>
+                <li><strong>Ключевые дни:</strong> ЧТ (темповая) и ВС (длительный)</li>
+                <li><strong>Интервалы:</strong> только 1 раз в неделю</li>
+                <li><strong>Силовая:</strong> обязательна 1–2 раза в неделю</li>
+                <li><strong>Финиш гонки:</strong> тренировать последние 3–5 км на «уставших ногах»</li>
+            </ul>
+        </div>
+
+        <div class="instructions">
+            <h2>🎯 Инструкция по выбору варианта</h2>
+            <div class="instruction-grid">
+                <div class="instruction-card">
+                    <h3>📊 Утренние замеры</h3>
+                    <p><strong>Пульс покоя:</strong> +5-10 к норме → 🟢 Легкий вариант</p>
+                    <p><strong>Самочувствие:</strong> 1-4 балла → 🟢, 5-7 → 🟡, 8-10 → 🔴</p>
+                    <p><strong>Сон:</strong> &lt;6 часов → 🟢, 6-7 → 🟡, 7+ → 🔴</p>
+                </div>
+                <div class="instruction-card">
+                    <h3>💡 Советы</h3>
+                    <p>• Не бойтесь отдыха - лучше пропустить, чем перетренироваться</p>
+                    <p>• Чередуйте интенсивности - не работайте на 🔴 больше 2 недель</p>
+                    <p>• Слушайте тело - если план говорит "🔴", а тело "🟢" - верьте телу</p>
+                    <p>• Записывайте выбор - отслеживайте влияние на прогресс</p>
+                </div>
+                <div class="instruction-card">
+                    <h3>📝 Пример выбора</h3>
+                    <p><strong>Утро ПН:</strong> Пульс +8 → выбираю 🟢 Легкий: 40' Z1-Z2</p>
+                    <p><strong>Утро ВТ:</strong> Выспался, пульс в норме → 🟡 Базовый</p>
+                    <p><strong>Утро СР:</strong> Чувствую усталость → 🟢 Легкий: Отдых</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
