@@ -1,0 +1,11 @@
+{
+    "name": "training-plan",
+    "version": "1.0.0",
+    "description": "Тренировочный конструктор для полумарафона",
+    "scripts": {
+      "build": "cp index.html dist/ && cp styles.css dist/"
+    },
+    "devDependencies": {
+      "@vercel/static-build": "^1.0.0"
+    }
+  }
